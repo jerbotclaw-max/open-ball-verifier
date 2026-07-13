@@ -41,7 +41,7 @@ function fitAt(f){
  const residuals=pts.map(r=>Math.hypot(pos(r.frame)[0]-evalAt(r.frame)[0],pos(r.frame)[1]-evalAt(r.frame)[1])).sort((a,b)=>a-b),sigma=Math.max(1.5,residuals[Math.floor(residuals.length*.68)]||2);
  return {points:Array.from({length:24},(_,i)=>({frame:f+i,xy:evalAt(f+i),radius:sigma*(1.6+.13*i+.012*i*i)})),sigma,pred:evalAt(f)};
 }
-function loadImage(f){return new Promise((resolve,reject)=>{image=new Image();image.onload=resolve;image.onerror=reject;image.src=`/frames/${String(f).padStart(3,'0')}.jpg`})}
+function loadImage(f){return new Promise((resolve,reject)=>{image=new Image();image.onload=resolve;image.onerror=reject;image.src=`/frames/${String(f-19).padStart(3,'0')}.jpg`})}
 async function setFrame(f){frame=Math.max(20,Math.min(216,+f));$('#scrubber').value=frame;$('#frameNo').textContent=frame;$('#timecode').textContent=`00:${String(Math.floor((frame-20)/30)).padStart(2,'0')}.${String(Math.round(((frame-20)%30)/30*1000)).padStart(3,'0')}`;await loadImage(frame);draw();updateStats()}
 function path(points,color,width=3,dashed=false){if(points.length<2)return;ctx.beginPath();points.forEach((p,i)=>i?ctx.lineTo(...p):ctx.moveTo(...p));ctx.strokeStyle=color;ctx.lineWidth=width;ctx.setLineDash(dashed?[9,7]:[]);ctx.stroke();ctx.setLineDash([])}
 function draw(){ctx.clearRect(0,0,960,540);ctx.drawImage(image,0,0);let fit=fitAt(frame);
